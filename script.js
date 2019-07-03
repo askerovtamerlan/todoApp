@@ -63,10 +63,8 @@ var handlers = {
     changeToDoInputPosition.value = "";
     view.displayToDo();
   },
-  toggleToDo: function () {
-    var toggleToDoInput = document.getElementById('toggleToDoInput');
-    todoList.toggleToDo(toggleToDoInput.valueAsNumber)
-    toggleToDoInput.value = "";
+  toggleToDo: function (position) {
+    todoList.toggleToDo(position);
     view.displayToDo();
   },
   deleteToDo: function (positiion) {
@@ -85,14 +83,22 @@ var view = {
     } else {
       todoList.todos.forEach ( function (todo, index) {
         var toDoElement = document.createElement('li');
+        var toDoTextElement = document.createElement('span');
+        
         toDoElement.id = index;
+        
+        
         // delete point decoration of li 
         if (todo.completed) {
-          toDoElement.textContent = todo.textToDo + '(x)';
+          toDoTextElement.textContent = todo.textToDo + '(x)';
         } else {
-          toDoElement.textContent = todo.textToDo + '( )';
+          toDoTextElement.textContent = todo.textToDo + '( )';
         }
+        
+        toDoElement.appendChild(this.toggleButton());
+        toDoElement.appendChild(toDoTextElement);
         toDoElement.appendChild(this.deleteButton());
+        
         displayToDoOutput.appendChild(toDoElement);
       }, this)
     }
@@ -105,15 +111,27 @@ var view = {
     
     return deleteButtonElement;
   },
+  toggleButton: function () {
+    
+    var toggleButtonEelement = document.createElement('button');
+    toggleButtonEelement.innerHTML = 'toggle';
+    toggleButtonEelement.className = 'toggleButton';
+    
+    return toggleButtonEelement;
+  },
   setupEventListeners: function () {
     var Ulist = document.querySelector('ul');
     Ulist.addEventListener('click', function (event) {
       if (event.target.className === 'deleteButton'){
       let position = parseInt(event.target.parentNode.id);
       handlers.deleteToDo(position);
+    } else if (event.target.className === 'toggleButton') {
+      let position = parseInt(event.target.parentNode.id);
+      handlers.toggleToDo(position);
     }
   });
-  }
+  },
+  
 };
 
 view.setupEventListeners();
