@@ -79,7 +79,6 @@ var view = {
   displayToDo: function () {
     var displayToDoOutput = document.getElementById("displayToDoOutput");
     displayToDoOutput.innerHTML = '';
-    debugger
     if (todoList.todos.length === 0) {
       console.log('todos array is empty');
       // change output from console to the view

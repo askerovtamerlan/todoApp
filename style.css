@@ -3,9 +3,58 @@
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 2em;
+  
 }
 
 h1 {
   font-style: italic;
   color: #373fff;
+}
+
+.container {
+
+}
+
+.application {
+  border: 3px solid black;
+  width: 320px;
+  margin: 0 auto;
+}
+
+
+header {
+  
+}
+
+.application p {
+  
+  font-size: 12px;
+  text-align: right;
+  margin-right: 5px;
+  margin: 0;
+  background-color: yellow;
+}
+
+.application h1 {
+  font-size: 54px;
+  margin: 1px;
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+.application h1:hover {
+  color: red; 
+}
+
+ul {
+  padding-left: 0;
+}
+
+ul li {
+  list-style: none;
+  
+  border: 3px solid black;
+  margin: 2px 2px 0 2px;
+  
 }
