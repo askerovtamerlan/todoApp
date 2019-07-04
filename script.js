@@ -41,6 +41,9 @@ var todoList = {
   }
 }
 
+
+
+
 var handlers = {
   displayToDo: function () {
     view.displayToDo();
@@ -50,9 +53,11 @@ var handlers = {
     view.displayToDo();
   },
   addToDo: function () {
-    var addToDoInput = document.getElementById('addToDoInput');
-    todoList.addToDo(addToDoInput.value);
-    addToDoInput.value = "";
+    // var addToDoInput = document.getElementById('addToDoInput');
+    // todoList.addToDo(addToDoInput.value);
+    // addToDoInput.value = "";
+    todoList.addToDo("fill");
+    
     view.displayToDo();
   },
   changeToDo: function (textToDo, position, status) {
@@ -82,6 +87,7 @@ var view = {
     // catch ul element    
     if (todoList.todos.length === 0) {
       console.log('todos array is empty');
+      displayToDoOutput.appendChild(this.addButton());
       // change output from console to the view
     } else {
       todoList.todos.forEach ( function (todo, index) {
@@ -100,8 +106,20 @@ var view = {
         
         toDoElement.appendChild(this.deleteButton());
         displayToDoOutput.appendChild(toDoElement);
-      },this)
+      },this);
+      displayToDoOutput.appendChild(this.addButton());
     }
+  },
+  addButton: function () {
+    var addButtonElement = document.createElement('Button');
+    addButtonElement.innerHTML = 'CRAFT';
+    addButtonElement.className = 'addButton';  
+    
+    var addContainer = document.createElement('li');
+    addContainer.appendChild(addButtonElement);
+    addContainer.className = 'addContainer';  
+  
+    return addContainer;
   },
   deleteButton: function () {
 
@@ -111,14 +129,6 @@ var view = {
     
     return deleteButtonElement;
   },
-//   toggleButton: function () {
-    
-//     var toggleButtonElement = document.createElement('button');
-//     toggleButtonElement.innerHTML = 'toggle';
-//     toggleButtonElement.className = 'toggleButton';
-    
-//     return toggleButtonElement;
-//   },
   toggleButton: function (index) {
     var toggleButtonElement = document.createElement('div');
     if (todoList.todos[index].completed === true) {
@@ -159,7 +169,9 @@ var view = {
       let position = parseInt(event.target.parentNode.id);
       // edit mode on (next displayToDo create ul with active button)
       handlers.changeToDo(todoList.todos[position].textToDo, position, 'button');
-      }
+    } else if (event.target.className === 'addButton') {
+      handlers.addToDo();
+    }
     });
     this.addEventListenerButton();
   },
@@ -175,9 +187,11 @@ var view = {
     }
   });
   },
+  // add below todo <li> elements add only input field for "addToDo"
+  // after 
 }
 
 
 view.setupEventListeners();
-
+view.displayToDo();
  

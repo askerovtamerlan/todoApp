@@ -65,6 +65,16 @@ li:second-child {
   flex-grow: 1;
 }
 
+.toggleAll {
+  width: 100%;
+}
+
+.toggleAll button {
+  background-color: red;
+  color: yellow;
+  width: 100%;
+}
+
 .toggleButton {
   font-size: 12px;
   display: inline-block;
@@ -85,4 +95,16 @@ li:second-child {
 
 .off {
   background-color: yellow;
+}
+
+.addContainer {
+  margin: 0;
+  border: 0;
+  margin-top: 2px;
+}
+
+.addButton {
+  width: 100%;
+  background-color: lightgreen;
+  
 }
