@@ -3,7 +3,8 @@ var todoList = {
   addToDo: function(textToDo) {
     this.todos.push({
       textToDo: textToDo,
-      completed: false
+      completed: false,
+      edit: false
     });
   },
   changeToDo: function(textToDo, position) {
@@ -40,6 +41,9 @@ var todoList = {
   }
 }
 
+
+
+
 var handlers = {
   displayToDo: function () {
     view.displayToDo();
@@ -49,24 +53,25 @@ var handlers = {
     view.displayToDo();
   },
   addToDo: function () {
-    var addToDoInput = document.getElementById('addToDoInput');
-    todoList.addToDo(addToDoInput.value);
-    addToDoInput.value = "";
-    view.displayToDo();
-  },
-  changeToDo: function () {
-    var changeToDoInputTextTodo = document.getElementById('changeToDoInputTextTodo');
-    var changeToDoInputPosition = document.getElementById('changeToDoInputPosition');
+    // var addToDoInput = document.getElementById('addToDoInput');
+    // todoList.addToDo(addToDoInput.value);
+    // addToDoInput.value = "";
+    todoList.addToDo("fill");
     
-    todoList.changeToDo(changeToDoInputTextTodo.value, changeToDoInputPosition.valueAsNumber);
-    changeToDoInputTextTodo.value = "";
-    changeToDoInputPosition.value = "";
     view.displayToDo();
   },
-  toggleToDo: function () {
-    var toggleToDoInput = document.getElementById('toggleToDoInput');
-    todoList.toggleToDo(toggleToDoInput.valueAsNumber)
-    toggleToDoInput.value = "";
+  changeToDo: function (textToDo, position, status) {
+    // button change to input, input change to button 
+    if (status === 'button') {
+      todoList.todos[position].edit = true;    
+    } else if (status === 'input') {
+      todoList.todos[position].edit = false;
+    }
+    todoList.changeToDo(textToDo, position);
+    view.displayToDo();
+  },
+  toggleToDo: function (position) {
+    todoList.toggleToDo(position);
     view.displayToDo();
   },
   deleteToDo: function (positiion) {
@@ -79,23 +84,42 @@ var view = {
   displayToDo: function () {
     var displayToDoOutput = document.getElementById("displayToDoOutput");
     displayToDoOutput.innerHTML = '';
+    // catch ul element    
     if (todoList.todos.length === 0) {
       console.log('todos array is empty');
+      displayToDoOutput.appendChild(this.addButton());
       // change output from console to the view
     } else {
       todoList.todos.forEach ( function (todo, index) {
         var toDoElement = document.createElement('li');
+        
         toDoElement.id = index;
-        // delete point decoration of li 
-        if (todo.completed) {
-          toDoElement.textContent = todo.textToDo + '(x)';
-        } else {
-          toDoElement.textContent = todo.textToDo + '( )';
+        toDoElement.appendChild(this.toggleButton(index));
+        if (todoList.todos[index].edit === true) {
+          toDoElement.appendChild(this.changeInput(todo.textToDo));
+        } else if (todoList.todos[index].edit === false) {
+          toDoElement.appendChild(this.changeButton(todo.textToDo));
         }
+        
+        // add condition for .toggle method for todo object 
+        // or function output two diffreint buttons depende of index 
+        
         toDoElement.appendChild(this.deleteButton());
         displayToDoOutput.appendChild(toDoElement);
-      }, this)
+      },this);
+      displayToDoOutput.appendChild(this.addButton());
     }
+  },
+  addButton: function () {
+    var addButtonElement = document.createElement('Button');
+    addButtonElement.innerHTML = 'CRAFT';
+    addButtonElement.className = 'addButton';  
+    
+    var addContainer = document.createElement('li');
+    addContainer.appendChild(addButtonElement);
+    addContainer.className = 'addContainer';  
+  
+    return addContainer;
   },
   deleteButton: function () {
 
@@ -105,17 +129,69 @@ var view = {
     
     return deleteButtonElement;
   },
+  toggleButton: function (index) {
+    var toggleButtonElement = document.createElement('div');
+    if (todoList.todos[index].completed === true) {
+      toggleButtonElement.className = 'toggleButton on';
+    } else if (todoList.todos[index].completed === false) {
+      toggleButtonElement.className = 'toggleButton off';
+    }
+    
+    return toggleButtonElement;
+  },
+  changeInput: function (textToDo) {
+    var changeInputElement = document.createElement('input');
+    changeInputElement.value = textToDo;
+    changeInputElement.className = 'changeInput';
+
+    return changeInputElement;
+  },
+  changeButton: function (textToDo) {
+    var changeButtonElement = document.createElement('button');
+    changeButtonElement.textContent = textToDo;
+    changeButtonElement.className = 'changeButton';
+
+    return changeButtonElement;
+  // refactor to functions in one, one create function for two cases
+  },
   setupEventListeners: function () {
     var Ulist = document.querySelector('ul');
     Ulist.addEventListener('click', function (event) {
       if (event.target.className === 'deleteButton'){
       let position = parseInt(event.target.parentNode.id);
       handlers.deleteToDo(position);
+    } else if (event.target.classList.contains('toggleButton')) {
+      let position = parseInt(event.target.parentNode.id);
+      handlers.toggleToDo(position);
+      // add to target cases: 1) className = todoActiveButton 2) className = todoPassiveButton
+    } else if (event.target.className === 'changeButton') { 
+      
+      let position = parseInt(event.target.parentNode.id);
+      // edit mode on (next displayToDo create ul with active button)
+      handlers.changeToDo(todoList.todos[position].textToDo, position, 'button');
+    } else if (event.target.className === 'addButton') {
+      handlers.addToDo();
+    }
+    });
+    this.addEventListenerButton();
+  },
+  addEventListenerButton: function () {
+    document.addEventListener('click', function (event) {
+    var changeInput = document.querySelector(".changeInput"); 
+    if (!event.target.closest(".changeInput") && !event.target.closest(".changeButton") && changeInput !== null) {
+
+      let position = parseInt(changeInput.parentNode.id);
+      let textToDo = changeInput.value;
+
+      handlers.changeToDo(textToDo, position, 'input');
     }
   });
-  }
-};
+  },
+  // add below todo <li> elements add only input field for "addToDo"
+  // after 
+}
+
 
 view.setupEventListeners();
-
-// create pretest for input information for addToDO
+view.displayToDo();
+ 

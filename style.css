@@ -49,6 +49,7 @@ header {
 
 ul {
   padding-left: 0;
+  margin: 2px;
 }
 
 ul li {
@@ -56,5 +57,54 @@ ul li {
   
   border: 3px solid black;
   margin: 2px 2px 0 2px;
+  
+  display: flex;
+}
+
+li:second-child {
+  flex-grow: 1;
+}
+
+.toggleAll {
+  width: 100%;
+}
+
+.toggleAll button {
+  background-color: red;
+  color: yellow;
+  width: 100%;
+}
+
+.toggleButton {
+  font-size: 12px;
+  display: inline-block;
+  width: 10px;
+  height: 8px;
+  margin: 8px;
+  border: 2px solid black;
+  border-bottom: 0;
+}
+
+.toggleButton:hover {
+  background-color: red;
+}
+
+.on {
+  background-color: darkred;
+}
+
+.off {
+  background-color: yellow;
+}
+
+.addContainer {
+  margin: 0;
+  border: 0;
+  margin-top: 2px;
+}
+
+.addButton {
+  width: 100%;
+  background-color: lightgreen;
   
 }
