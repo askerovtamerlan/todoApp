@@ -8,7 +8,6 @@ var todoList = {
     });
   },
   changeToDo: function(textToDo, position) {
-    // Check position number between 0 and this.todos.length
     this.todos[position].textToDo = textToDo;
   },
   deleteToDo: function(position) {
@@ -53,11 +52,7 @@ var handlers = {
     view.displayToDo();
   },
   addToDo: function () {
-    // var addToDoInput = document.getElementById('addToDoInput');
-    // todoList.addToDo(addToDoInput.value);
-    // addToDoInput.value = "";
-    todoList.addToDo("fill");
-    
+    todoList.addToDo("name");    
     view.displayToDo();
   },
   changeToDo: function (textToDo, position, status) {
@@ -84,36 +79,36 @@ var view = {
   displayToDo: function () {
     var displayToDoOutput = document.getElementById("displayToDoOutput");
     displayToDoOutput.innerHTML = '';
-    // catch ul element    
+
     if (todoList.todos.length === 0) {
       console.log('todos array is empty');
-      displayToDoOutput.appendChild(this.addButton());
-      // change output from console to the view
+      displayToDoOutput.appendChild(this.addButton('empty'));
+      
     } else {
       todoList.todos.forEach ( function (todo, index) {
         var toDoElement = document.createElement('li');
         
         toDoElement.id = index;
+
         toDoElement.appendChild(this.toggleButton(index));
-        if (todoList.todos[index].edit === true) {
-          toDoElement.appendChild(this.changeInput(todo.textToDo));
-        } else if (todoList.todos[index].edit === false) {
-          toDoElement.appendChild(this.changeButton(todo.textToDo));
-        }
-        
-        // add condition for .toggle method for todo object 
-        // or function output two diffreint buttons depende of index 
-        
+        toDoElement.appendChild(this.changeElement(todo.textToDo, index));
         toDoElement.appendChild(this.deleteButton());
+
         displayToDoOutput.appendChild(toDoElement);
       },this);
+      
       displayToDoOutput.appendChild(this.addButton());
     }
   },
-  addButton: function () {
+  addButton: function (status) {
     var addButtonElement = document.createElement('Button');
-    addButtonElement.innerHTML = 'CRAFT';
     addButtonElement.className = 'addButton';  
+    
+    if (status === 'empty') 
+    addButtonElement.innerHTML = 'ADD TARGET';
+    
+    else if (status === undefined) 
+    addButtonElement.innerHTML = 'MORE';
     
     var addContainer = document.createElement('li');
     addContainer.appendChild(addButtonElement);
@@ -122,53 +117,55 @@ var view = {
     return addContainer;
   },
   deleteButton: function () {
-
     var deleteButtonElement = document.createElement('button');
-    deleteButtonElement.innerHTML = 'delete';
+    deleteButtonElement.innerHTML = 'x';
     deleteButtonElement.className = 'deleteButton';    
     
     return deleteButtonElement;
   },
   toggleButton: function (index) {
     var toggleButtonElement = document.createElement('div');
+    
     if (todoList.todos[index].completed === true) {
       toggleButtonElement.className = 'toggleButton on';
+      
     } else if (todoList.todos[index].completed === false) {
       toggleButtonElement.className = 'toggleButton off';
     }
     
     return toggleButtonElement;
   },
-  changeInput: function (textToDo) {
-    var changeInputElement = document.createElement('input');
-    changeInputElement.value = textToDo;
-    changeInputElement.className = 'changeInput';
-
-    return changeInputElement;
-  },
-  changeButton: function (textToDo) {
-    var changeButtonElement = document.createElement('button');
-    changeButtonElement.textContent = textToDo;
-    changeButtonElement.className = 'changeButton';
-
-    return changeButtonElement;
-  // refactor to functions in one, one create function for two cases
+  changeElement: function (textToDo, index) {
+    var changeElement = undefined;
+    
+    if (todoList.todos[index].edit === true){
+      changeElement = document.createElement('input');
+      changeElement.value = textToDo;
+      changeElement.className = 'changeInput';
+      
+    } else if (todoList.todos[index].edit === false) {
+      changeElement = document.createElement('button');
+      changeElement.textContent = textToDo;
+      changeElement.className = 'changeButton';
+    }
+    return changeElement;
   },
   setupEventListeners: function () {
     var Ulist = document.querySelector('ul');
+    
     Ulist.addEventListener('click', function (event) {
       if (event.target.className === 'deleteButton'){
       let position = parseInt(event.target.parentNode.id);
       handlers.deleteToDo(position);
+        
     } else if (event.target.classList.contains('toggleButton')) {
       let position = parseInt(event.target.parentNode.id);
       handlers.toggleToDo(position);
-      // add to target cases: 1) className = todoActiveButton 2) className = todoPassiveButton
-    } else if (event.target.className === 'changeButton') { 
       
+    } else if (event.target.className === 'changeButton') { 
       let position = parseInt(event.target.parentNode.id);
-      // edit mode on (next displayToDo create ul with active button)
       handlers.changeToDo(todoList.todos[position].textToDo, position, 'button');
+      
     } else if (event.target.className === 'addButton') {
       handlers.addToDo();
     }
@@ -187,8 +184,6 @@ var view = {
     }
   });
   },
-  // add below todo <li> elements add only input field for "addToDo"
-  // after 
 }
 
 
